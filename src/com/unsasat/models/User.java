@@ -8,17 +8,17 @@ import java.util.List;
 
 public class User extends Model
 {
-    public String name = "test";
-    public String firstName = "test";
-    public String username = "test";
-    public String pin = "0000";
+    public String name;
+    public String firstName;
+    public String username;
+    public String pin;
 
     public User()
     {
         table = "users";
     }
 
-    public void Insert()
+    public boolean register()
     {
         String query = "Insert into users (name, firstname, username, pin) values(?,?,?,?)";
         try
@@ -29,10 +29,12 @@ public class User extends Model
             stmt.setString(3, username);
             stmt.setString(4, pin);
             stmt.execute();
+            return true;
         }
         catch (Exception e)
         {
             System.out.println(e);
+            return false;
         }
     }
 
@@ -85,7 +87,29 @@ public class User extends Model
         }
     }
 
-    public boolean auth(String username, String pin)
+    public boolean auth()
+    {
+        String query = "Select * from users where username = ? and pin = ? order by id desc";
+        try
+        {
+            PreparedStatement stmt = connection().prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, pin);
+            System.out.println(stmt);
+            ResultSet result =  stmt.executeQuery();
+            while (result.next())
+            {
+                return true;
+            }
+            return false;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            return false;
+        }
+    }
+    public ResultSet getAuthUser()
     {
         String query = "Select * from users where username=?, pin=? order by id desc";
         try
@@ -96,17 +120,14 @@ public class User extends Model
             ResultSet result =  stmt.executeQuery();
             if (result.next())
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                return result;
             }
         }
         catch (Exception e)
         {
-            return false;
+            return null;
         }
+        return null;
     }
 
     public static void main(String[] args)
