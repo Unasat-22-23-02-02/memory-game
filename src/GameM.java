@@ -1,5 +1,6 @@
 package src.com.unsasat;
 
+import src.com.unsasat.models.Game;
 import src.com.unsasat.models.User;
 
 import javax.swing.*;
@@ -59,40 +60,46 @@ public class GameM implements ActionListener {
     private JTextArea instructM = new JTextArea("When the game begins, the screen will be filled with pairs of buttons.\nMemorize their placement. Once you press any button, they will all clear.\nYour goal is to click the matching buttons in a row. When you finish that, you win.\nEvery incorrect click gives you a point (those are bad).\nGOOD LUCK!");
 
     public GameM() {
-        frame.setSize(500, 300);
-        frame.setLocation(500, 300);
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        start_screen.setLayout(new BorderLayout());
-        auth.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu2.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu3.setLayout(new FlowLayout(FlowLayout.CENTER));
-        mini.setLayout(new FlowLayout(FlowLayout.CENTER));
-        start_screen.add(auth);
-        start_screen.setLayout(new GridLayout(5,2));
-        auth.add(login);
-        auth.add(register);
-        login.addActionListener(this);
-        login.setEnabled(true);
-        register.addActionListener(this);
-        register.setEnabled(true);
+        if(userID != 0)
+        {
+            frame.setSize(500, 300);
+            frame.setLocation(500, 300);
+            frame.setLayout(new BorderLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(start_screen, BorderLayout.CENTER);
+            frame.setVisible(true);
+            mainMenu();
+        }
+        else {
+            frame.setSize(500, 300);
+            frame.setLocation(500, 300);
+            frame.setLayout(new BorderLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            start_screen.setLayout(new BorderLayout());
+            auth.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu2.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu3.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mini.setLayout(new FlowLayout(FlowLayout.CENTER));
+            start_screen.add(auth);
+            start_screen.setLayout(new GridLayout(5,2));
+            auth.add(login);
+            auth.add(register);
+            login.addActionListener(this);
+            login.setEnabled(true);
+            register.addActionListener(this);
+            register.setEnabled(true);
+            frame.add(start_screen, BorderLayout.CENTER);
+            frame.setVisible(true);
+        }
 
 
-
-
-
-        frame.add(start_screen, BorderLayout.CENTER);
-        frame.setVisible(true);
     }
 
 
 
     public void setUpGame() {
         clearMain();
-
-
-
         board = new String[20];
         for (int i = 0; i < 20; i++) {
             btn[i] = new JButton("");
@@ -102,9 +109,6 @@ public class GameM implements ActionListener {
             field.add(btn[i]);
             btn[i].setText("");  // Set the initial text of buttons to empty
         }
-
-
-
         String[] b = { ":-D", "X", "O", "-(*.*)-", "<>", "<(^-^)>", "=>", ";^P", "ABC", "123" };
         a = b;
 
@@ -114,9 +118,6 @@ public class GameM implements ActionListener {
         for (int i = 0; i < 20; i++) {
             indexes.add(i);
         }
-
-
-
         for (int i = 0; i < 10; i++) {
             for (int z = 0; z < 2; z++) {
                 int randomIndex = indexes.remove(randomGenerator.nextInt(indexes.size()));
@@ -165,7 +166,9 @@ public class GameM implements ActionListener {
 
 
     public boolean checkWin() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++)
+        {
+
             if (board[i] != "done") {
                 return false;
             }
@@ -210,7 +213,6 @@ public class GameM implements ActionListener {
     }
 
 
-
     public void actionPerformed(ActionEvent click) {
         Object source = click.getSource();
         if (purgatory) {
@@ -225,6 +227,7 @@ public class GameM implements ActionListener {
 
         if (source == start) {
             setUpGame();
+//            goToMainScreen();
         }
 
         if (source == over) {
@@ -377,6 +380,10 @@ public class GameM implements ActionListener {
 
 
     public void gameOver() {
+        Game newScore = new Game();
+        newScore.score = score;
+        newScore.userID = userID;
+        newScore.insertScore();
         start_screen.remove(field);
         start_screen.add(end_screen, BorderLayout.CENTER);
         end_screen.add(new TextField("Game Over"), BorderLayout.NORTH);
