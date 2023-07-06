@@ -273,10 +273,6 @@ public class Main implements ActionListener {
 
         for(int i =0;i<(level*2);i++){//gameplay when a button is pressed
             if(source==btn[i]){
-                System.out.println("score: " + score);
-                System.out.println("temp: " + temp);
-                System.out.println("fails: " + fails);
-                System.out.println(level*2);
                 if(shown){
                     hideField(level);//if first time, hides field
                 }

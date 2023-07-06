@@ -10,8 +10,17 @@ import java.awt.event.*;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * By:
+ * - Kasan Jamil
+ * - Kedah Ya'ish
+ * - Mac Andrew Jeacqke
+ * - Mahangoe Nikhil
+ * - Koendjbiharie Aniel
+ */
 
-public class App implements ActionListener {
+
+public class  App implements ActionListener {
     JButton submitLogin = new JButton("Login");
     JButton submitRegister = new JButton("Register");
     JTextField name = new JTextField("", 20);
@@ -34,6 +43,7 @@ public class App implements ActionListener {
     JButton register = new JButton("Register");
     JButton start = new JButton("Start");
     JButton over = new JButton("Exit");
+    JButton logout = new JButton("Logout");
     JButton inst = new JButton("Instructions");
     JButton goBack = new JButton("Main Menu");
     Random randomGenerator = new Random();
@@ -131,6 +141,11 @@ public class App implements ActionListener {
             login();
         }
 
+        if (source == logout) {
+            frame.dispose();
+            new App();
+        }
+
 
     }
 
@@ -149,14 +164,11 @@ public class App implements ActionListener {
         over.setEnabled(true);
         menu2.add(over);
         menu2.add(scores);
+        menu2.add(logout);
         scores.addActionListener(this);
         scores.setEnabled(true);
-        inst.addActionListener(this);
-        inst.setEnabled(true);
-        inst.addActionListener(this);
-        inst.setEnabled(true);
-        inst.addActionListener(this);
-        inst.setEnabled(true);
+        logout.addActionListener(this);
+        logout.setEnabled(true);
     }
 
     public void clear()
