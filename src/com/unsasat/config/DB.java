@@ -7,12 +7,7 @@ public class DB
     public Connection connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection("jdbc:mysql://localhost:49852/unasat","root","Jamil121!");
-//            Statement stmt=con.createStatement();
-//            ResultSet rs=stmt.executeQuery("select * from test");
-//            while(rs.next())
-//                System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
-//            con.close();
+            return DriverManager.getConnection("jdbc:mysql://localhost:49411/unasat","root","Jamil121!");
         }
         catch(Exception e)
         {

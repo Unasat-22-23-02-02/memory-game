@@ -38,24 +38,6 @@ public class User extends Model
         }
     }
 
-    public void delete(int id)
-    {
-        String query = "Insert into users (name, firstname, username, pin) values(?,?,?,?)";
-        try
-        {
-            PreparedStatement stmt = connection().prepareStatement(query);
-            stmt.setString(1, name);
-            stmt.setString(2, firstName);
-            stmt.setString(3, username);
-            stmt.setString(4, pin);
-            stmt.execute();
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-        }
-    }
-
     public ResultSet getAll()
     {
         String query = "Select * from users order by id desc";
@@ -70,23 +52,6 @@ public class User extends Model
             return null;
         }
     }
-
-    public ResultSet getOne(int id)
-    {
-        String query = "Select * from users where id=? order by id desc";
-        try
-        {
-            PreparedStatement stmt = connection().prepareStatement(query);
-            stmt.setInt(1, id);
-            return stmt.executeQuery();
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-            return null;
-        }
-    }
-
     public boolean auth()
     {
         String query = "Select * from users where username = ? and pin = ? order by id desc";
@@ -95,7 +60,6 @@ public class User extends Model
             PreparedStatement stmt = connection().prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, pin);
-            System.out.println(stmt);
             ResultSet result =  stmt.executeQuery();
             while (result.next())
             {
@@ -111,43 +75,26 @@ public class User extends Model
     }
     public ResultSet getAuthUser()
     {
-        String query = "Select * from users where username=?, pin=? order by id desc";
+        String query = "Select * from users where username=? and pin=? order by id desc";
         try
         {
             PreparedStatement stmt = connection().prepareStatement(query);
             stmt.setString(1, username);
-            stmt.setString(1, pin);
+            stmt.setString(2, pin);
             ResultSet result =  stmt.executeQuery();
-            if (result.next())
+
+            while (result.next())
             {
                 return result;
             }
+
         }
         catch (Exception e)
         {
+            System.out.println(e);
             return null;
         }
         return null;
-    }
-
-    public static void main(String[] args)
-    {
-        User test = new User();
-//        test.Insert();
-        ResultSet users = test.getOne(1);
-        try
-        {
-            while (users.next())
-            {
-                System.out.println("Name: " + users.getString(2) +" " + users.getString(3));
-                System.out.println("Username: " + users.getString(4));
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
-
     }
 
 }

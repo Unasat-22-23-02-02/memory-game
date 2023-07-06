@@ -1,5 +1,7 @@
 package src.com.unsasat;
 
+import src.com.unsasat.gui.Main;
+import src.com.unsasat.gui.TopScores;
 import src.com.unsasat.models.User;
 
 import javax.swing.*;
@@ -7,13 +9,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
-public class GameM implements ActionListener {
-
-
-
+public class App implements ActionListener {
     JButton submitLogin = new JButton("Login");
     JButton submitRegister = new JButton("Register");
     JTextField name = new JTextField("", 20);
@@ -32,6 +30,7 @@ public class GameM implements ActionListener {
     JPanel instruct_screen = new JPanel();
     JButton btn[] = new JButton[20];
     JButton login = new JButton("Login");
+    JButton scores = new JButton("Top scores");
     JButton register = new JButton("Register");
     JButton start = new JButton("Start");
     JButton over = new JButton("Exit");
@@ -40,8 +39,6 @@ public class GameM implements ActionListener {
     Random randomGenerator = new Random();
     int userID;
     ResultSet userI;
-
-
     private boolean purgatory = false;
     Boolean game_over = false;
     int level = 0;
@@ -58,173 +55,50 @@ public class GameM implements ActionListener {
     private JLabel label = new JLabel("Instructions: Memorize the symbols and click on the matching pairs.");
     private JTextArea instructM = new JTextArea("When the game begins, the screen will be filled with pairs of buttons.\nMemorize their placement. Once you press any button, they will all clear.\nYour goal is to click the matching buttons in a row. When you finish that, you win.\nEvery incorrect click gives you a point (those are bad).\nGOOD LUCK!");
 
-    public GameM() {
-        frame.setSize(500, 300);
-        frame.setLocation(500, 300);
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        start_screen.setLayout(new BorderLayout());
-        auth.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu2.setLayout(new FlowLayout(FlowLayout.CENTER));
-        menu3.setLayout(new FlowLayout(FlowLayout.CENTER));
-        mini.setLayout(new FlowLayout(FlowLayout.CENTER));
-        start_screen.add(auth);
-        start_screen.setLayout(new GridLayout(5,2));
-        auth.add(login);
-        auth.add(register);
-        login.addActionListener(this);
-        login.setEnabled(true);
-        register.addActionListener(this);
-        register.setEnabled(true);
-
-
-
-
-
-        frame.add(start_screen, BorderLayout.CENTER);
-        frame.setVisible(true);
+    public App() {
+        initiate();
     }
 
 
-
-    public void setUpGame() {
-        clearMain();
-
-
-
-        board = new String[20];
-        for (int i = 0; i < 20; i++) {
-            btn[i] = new JButton("");
-            btn[i].setBackground(new Color(220, 220, 220));
-            btn[i].addActionListener(this);
-            btn[i].setEnabled(true);
-            field.add(btn[i]);
-            btn[i].setText("");  // Set the initial text of buttons to empty
+    public void initiate()
+    {
+        if (userID == 0)
+        {
+            System.out.println("new Session");
+            frame.setSize(500, 300);
+            frame.setLocation(500, 300);
+            frame.setLayout(new BorderLayout());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            start_screen.setLayout(new BorderLayout());
+            auth.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu2.setLayout(new FlowLayout(FlowLayout.CENTER));
+            menu3.setLayout(new FlowLayout(FlowLayout.CENTER));
+            mini.setLayout(new FlowLayout(FlowLayout.CENTER));
+            start_screen.add(auth);
+            start_screen.setLayout(new GridLayout(5,2));
+            auth.add(login);
+            auth.add(register);
+            login.addActionListener(this);
+            login.setEnabled(true);
+            register.addActionListener(this);
+            register.setEnabled(true);
+            frame.add(start_screen, BorderLayout.CENTER);
+            frame.setVisible(true);
         }
-
-
-
-        String[] b = { ":-D", "X", "O", "-(*.*)-", "<>", "<(^-^)>", "=>", ";^P", "ABC", "123" };
-        a = b;
-
-
-
-        ArrayList<Integer> indexes = new ArrayList<Integer>();
-        for (int i = 0; i < 20; i++) {
-            indexes.add(i);
-        }
-
-
-
-        for (int i = 0; i < 10; i++) {
-            for (int z = 0; z < 2; z++) {
-                int randomIndex = indexes.remove(randomGenerator.nextInt(indexes.size()));
-                board[randomIndex] = a[i];
-            }
-        }
-        createBoard();
-    }
-
-
-
-    public void hideField() {
-        for (int i = 0; i < 20; i++) {
-            btn[i].setText("");
-        }
-        shown = false;
-    }
-
-
-
-    public void switchSpot(int i) {
-        if (board[i] != "done") {
-            if (btn[i].getText() == "") {
-                btn[i].setText(board[i]);
-            } else {
-                btn[i].setText("");
-            }
+        else
+        {
+            System.out.println("old Session");
+            mainMenu();
         }
     }
-
-
-
-    public void showSpot(int i) {
-        btn[i].setText(board[i]);
-    }
-
-
-
-    public void showField() {
-        for (int i = 0; i < 20; i++) {
-            btn[i].setText(a[i]);
-        }
-        shown = true;
-    }
-
-
-
-    public boolean checkWin() {
-        for (int i = 0; i < 20; i++) {
-            if (board[i] != "done") {
-                return false;
-            }
-        }
-        winner();
-        return true;
-    }
-
-
-
-    public void winner() {
-        start_screen.remove(field);
-        start_screen.add(end_screen, BorderLayout.CENTER);
-        end_screen.add(new TextField("You Win"), BorderLayout.NORTH);
-        end_screen.add(new TextField("Score: " + score), BorderLayout.SOUTH);
-        end_screen.add(goBack);
-        goBack.setEnabled(true);
-        goBack.addActionListener(this);
-    }
-
-
-
-    public void goToMainScreen() {
-        new GameM();
-    }
-
-
-    public void createBoard() {
-        field.setLayout(new BorderLayout());
-        start_screen.add(field, BorderLayout.CENTER);
-        field.setLayout(new GridLayout(4, 5, 2, 2));
-        field.setBackground(Color.black);
-        field.requestFocus();
-    }
-
-    public void clearMain() {
-        start_screen.remove(menu);
-        start_screen.remove(menu2);
-        start_screen.remove(menu3);
-        start_screen.revalidate();
-        start_screen.repaint();
-    }
-
-
 
     public void actionPerformed(ActionEvent click) {
         Object source = click.getSource();
-        if (purgatory) {
-            switchSpot(temp2);
-            switchSpot(temp);
-            score++;
-            incorrectClicks++; // Increment the incorrect clicks counter
-            temp = 30;
-            temp2 = 30;
-            purgatory = false;
-        }
 
         if (source == start) {
-            setUpGame();
+            Main game = new Main();
+            game.userID = userID;
         }
 
         if (source == over) {
@@ -241,6 +115,12 @@ public class GameM implements ActionListener {
             registerForm();
         }
 
+        if (source == scores) {
+            TopScores ts= new TopScores(userID);
+
+//            new TopScores();
+        }
+
         if (source == submitRegister) {
             register();
 
@@ -249,63 +129,9 @@ public class GameM implements ActionListener {
 
         if (source == submitLogin) {
             login();
-
-//            loginFailed();
         }
 
 
-
-
-        if (source == inst) {
-            clearMain();
-            start_screen.add(instruct_screen, BorderLayout.NORTH);
-            JPanel one = new JPanel();
-            one.setLayout(new FlowLayout(FlowLayout.CENTER));
-            JPanel two = new JPanel();
-            two.setLayout(new FlowLayout(FlowLayout.CENTER));
-            instruct_screen.setLayout(new BorderLayout());
-            instruct_screen.add(one, BorderLayout.NORTH);
-            instruct_screen.add(two, BorderLayout.SOUTH);
-            one.add(instructM);
-            two.add(goBack);
-            goBack.addActionListener(this);
-            goBack.setEnabled(true);
-        }
-
-
-
-        if (source == goBack) {
-            frame.dispose();
-            goToMainScreen();
-        }
-
-        for (int i = 0; i < 20; i++) {
-            if (source == btn[i]) {
-                if (shown) {
-                    hideField();
-                } else {
-                    switchSpot(i);
-                    if (temp >= 20) {
-                        temp = i;
-                    } else {
-                        if ((board[temp] != board[i]) || (temp == i)) {
-                            temp2 = i;
-                            purgatory = true;
-                            score++;  // Increment score for non-matching pair
-                            incorrectClicks++; // Increment the incorrect clicks counter
-                            if (incorrectClicks >= 20) {
-                                gameOver();  // Check if game over condition is met
-                            }
-                        } else {
-                            board[i] = "done";
-                            board[temp] = "done";
-                            checkWin();
-                            temp = 20;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public void mainMenu()
@@ -316,15 +142,15 @@ public class GameM implements ActionListener {
         start_screen.add(menu2, BorderLayout.SOUTH);
         menu3.add(mini, BorderLayout.CENTER);
         menu.add(label);
-        mini.add(inst, BorderLayout.SOUTH);
-
-
         start.addActionListener(this);
         start.setEnabled(true);
         menu2.add(start);
         over.addActionListener(this);
         over.setEnabled(true);
         menu2.add(over);
+        menu2.add(scores);
+        scores.addActionListener(this);
+        scores.setEnabled(true);
         inst.addActionListener(this);
         inst.setEnabled(true);
         inst.addActionListener(this);
@@ -375,16 +201,6 @@ public class GameM implements ActionListener {
     }
 
 
-
-    public void gameOver() {
-        start_screen.remove(field);
-        start_screen.add(end_screen, BorderLayout.CENTER);
-        end_screen.add(new TextField("Game Over"), BorderLayout.NORTH);
-        end_screen.add(new TextField("Score: " + score), BorderLayout.SOUTH);
-        end_screen.add(goBack);
-        goBack.setEnabled(true);
-        goBack.addActionListener(this);
-    }
     public void register()
     {
         User user = new User();
@@ -407,8 +223,6 @@ public class GameM implements ActionListener {
         User user = new User();
         user.pin= pin.getText();
         user.username= username.getText();
-//        System.out.println(pin.getText());
-//        System.out.println(username.getText());
         if (user.auth())
         {
             ResultSet userInfo = user.getAuthUser();
@@ -421,13 +235,10 @@ public class GameM implements ActionListener {
             catch(Exception e)
             {
 
-            }
-
-            mainMenu();
-        }
+            }}
         else
         {
-            registrationFailed();
+            loginFailed();
         }
     }
 
@@ -441,15 +252,12 @@ public class GameM implements ActionListener {
         d.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // create a label
-        JLabel l = new JLabel("Username or pin incorrect");
-        d.add(l);
         // setsize of dialog
         d.setSize(400, 100);
         // set visibility of dialog
         d.setVisible(true);
         try
         {
-            d.add(l);
             Thread.sleep(2000);
             d.setVisible(false);
             frame.setEnabled(true);
@@ -486,9 +294,7 @@ public class GameM implements ActionListener {
         }
     }
 
-
-
     public static void main(String[] arguments) {
-        GameM mg = new GameM();
+        App mg = new App();
     }
 }
